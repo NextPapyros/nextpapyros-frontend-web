@@ -6,3 +6,7 @@ Esta regla permite que el codigo generado sea consistente con las practicas defi
 
 - Todo el código utilizado en este proyecto debe seguir la arquitectura planteada en 'ARCHITECTURE.md'.
 - En caso de ser necesario usar una estructura diferente, se debe documentar con `ARCHITECTURE_DEVIATION.md` en el modulo al que pertenece el archivo en cuestión.
+- Todos los archivos `.vue` deben tener en el siguiente orden sus etiquetas:
+  1. Script
+  2. Template
+  3. Styles (si es necesario, darse prioridad a Tailwind)
