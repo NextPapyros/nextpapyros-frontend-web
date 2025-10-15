@@ -1,41 +1,74 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { LogOut } from "lucide-vue-next";
 
 import { useUserStore } from "@/store/userStore";
 import { Button } from "@/components/ui/button";
 import { RouteNames } from "@/router";
+import { formatDateForHeader } from "@/utils/format";
+import { computed } from "vue";
 
 const userStore = useUserStore();
 const router = useRouter();
+const route = useRoute();
 
 const logout = () => {
-    userStore.logout();
     router.push({ name: RouteNames.LOGIN, replace: true });
+    userStore.logout();
 };
+
+const title = computed(() => {
+    switch (route.name) {
+        case RouteNames.ADMIN:
+            return "Panel Administrador"
+        case RouteNames.EMPLOYEE:
+            return "Panel Empleado"
+        case RouteNames.CREATE_EMPLOYEE:
+            return "Gestión de Empleados"
+        default:
+            return "Papeleria"
+    }
+})
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50">
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-4">
-                    <h1 class="text-xl font-semibold text-gray-900">
-                        NextPapyros
-                    </h1>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm text-gray-600">
-                            {{ userStore.profile?.name }}
-                        </span>
-                        <Button @click="logout" variant="outline" size="sm">
-                            Cerrar Sesión
-                        </Button>
+    <main class="h-screen flex flex-col overflow-hidden">
+        <header class="w-full p-4 flex justify-center bg-[#A3EBB133]">
+            <div class="grow max-w-7xl flex justify-between items-center">
+                <div class="flex items-end gap-3">
+                    <img width="50" height="90" src="/hoja-icono.png"
+                        alt="Ilustración de hoja con transición horizontal de verde a verde azul">
+                    <div>
+                        <h1 class="title-2">
+                            {{ title }}
+                        </h1>
+                        <p class="text-medium text-dark-soft">
+                            NextPapyros - Ecológica y Moderna
+                        </p>
                     </div>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <div class="flex flex-col gap-1 items-end">
+                        <p class="title-4">
+                            {{ userStore.profile?.name || "Anonimo" }}
+                        </p>
+                        <p class="text-medium text-dark-soft">
+                            {{ formatDateForHeader(new Date()) }}
+                        </p>
+                    </div>
+
+                    <Button variant="ghost"
+                        class="text-medium hover:text-error-base hover:bg-[#EF444433] cursor-pointer" @click="logout">
+                        <LogOut class="w-5 h-5" />
+                        <span>Salir</span>
+                    </Button>
                 </div>
             </div>
         </header>
-
-        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <router-view />
-        </main>
-    </div>
+        <section class="p-6 flex-1 flex justify-center items-start bg-light-base overflow-auto">
+            <div class="w-full max-w-7xl">
+                <RouterView />
+            </div>
+        </section>
+    </main>
 </template>

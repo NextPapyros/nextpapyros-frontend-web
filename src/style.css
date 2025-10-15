@@ -146,10 +146,18 @@
   @apply font-semibold text-3xl;
 }
 
+@utility title-4 {
+  @apply font-semibold text-xl;
+}
+
 @utility text-regular-small {
   @apply font-normal text-sm;
 }
 
 @utility text-regular-medium {
   @apply font-medium text-sm;
+}
+
+@utility text-medium {
+  @apply font-medium text-base;
 }
