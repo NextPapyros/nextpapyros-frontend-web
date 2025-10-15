@@ -3,7 +3,8 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
-import { useUserStore, type Role } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
+import type { Role } from "@/types";
 
 export const RouteNames = {
   LOGIN: "login",
@@ -11,6 +12,7 @@ export const RouteNames = {
   EMPLOYEE: "employee",
   UNAUTHORIZED: "unauthorized",
   CREATE_EMPLOYEE: "create-employee",
+  CREATE_PRODUCT: "create-product",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -51,6 +53,12 @@ const routes: RouteRecordRaw[] = [
         path: "admin/employees/create",
         name: RouteNames.CREATE_EMPLOYEE,
         component: () => import("@/modules/admin/views/CreateEmployee.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "admin/products/create",
+        name: RouteNames.CREATE_PRODUCT,
+        component: () => import("@/modules/product/views/CreateProduct.vue"),
         meta: { roles: ["Admin"] },
       },
       {
