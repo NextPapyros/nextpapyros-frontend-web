@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export type Role = "Admin" | "Employee";
+import type { Role } from "@/types";
 
 export interface Profile {
   id: number;
