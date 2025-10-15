@@ -1,7 +1,3 @@
-¡Listo! Mantengo la **estructura y reglas** de la guía anterior y añado **solo los ejemplos de código imprescindibles** para que se vea claro cómo se conecta todo sin abrumar.
-
----
-
 # Arquitectura mínima (NextPapyros Web)
 
 ## Principios
