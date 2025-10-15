@@ -10,6 +10,7 @@ export const RouteNames = {
   ADMIN: "admin",
   EMPLOYEE: "employee",
   UNAUTHORIZED: "unauthorized",
+  CREATE_EMPLOYEE: "create-employee",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -44,6 +45,12 @@ const routes: RouteRecordRaw[] = [
         path: "admin",
         name: RouteNames.ADMIN,
         component: () => import("@/modules/admin/views/AdminDashboard.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "admin/employees/create",
+        name: RouteNames.CREATE_EMPLOYEE,
+        component: () => import("@/modules/admin/views/CreateEmployee.vue"),
         meta: { roles: ["Admin"] },
       },
       {
