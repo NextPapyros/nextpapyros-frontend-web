@@ -3,6 +3,8 @@ export interface LoginRequest {
   password: string;
 }
 
+export type RoleDto = "Admin" | "Empleado";
+
 export interface LoginResponse {
   token: string;
   expiresAtUtc: string;
@@ -12,7 +14,5 @@ export interface ProfileResponse {
   id: number;
   nombre: string;
   email: string;
-  roles: Role[];
+  roles: RoleDto[];
 }
-
-export type Role = "Admin" | "Employee";
