@@ -27,6 +27,11 @@ const userStore = useUserStore();
                         <h3 class="font-semibold text-green-900">Gestión de Productos</h3>
                         <p class="text-green-700 text-sm">Crear nuevos productos en el catálogo</p>
                     </router-link>
+                    <router-link :to="{ name: RouteNames.CREATE_SUPPLIER }"
+                        class="bg-orange-50 p-4 rounded-lg hover:bg-orange-100 transition-colors">
+                        <h3 class="font-semibold text-orange-900">Gestión de Proveedores</h3>
+                        <p class="text-orange-700 text-sm">Registrar nuevos proveedores</p>
+                    </router-link>
                     <div class="bg-purple-50 p-4 rounded-lg">
                         <h3 class="font-semibold text-purple-900">Reportes</h3>
                         <p class="text-purple-700 text-sm">Próximamente...</p>

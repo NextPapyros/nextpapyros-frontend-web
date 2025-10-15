@@ -1,6 +1,6 @@
 import { api } from "@/services/apiClient";
 
-import type { SupplierOption } from "../types/supplierTypes";
+import type { SupplierOption, NewSupplier } from "../types/supplierTypes";
 
 const mockSuppliers: SupplierOption[] = [
   { id: "1", name: "Distribudora Papelera S.A." },
@@ -28,4 +28,9 @@ export async function getSupplierOptionsListApi(): Promise<SupplierOption[]> {
   } catch (error) {
     return mockSuppliers;
   }
+}
+
+export async function createSupplierApi(payload: NewSupplier): Promise<void> {
+  const { data } = await api.post("/proveedores", payload);
+  return data;
 }
