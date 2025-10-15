@@ -35,7 +35,7 @@ const title = computed(() => {
     <main class="h-screen flex flex-col overflow-hidden">
         <header class="w-full p-4 flex justify-center bg-[#A3EBB133]">
             <div class="grow max-w-7xl flex justify-between items-center">
-                <div class="flex items-end gap-3">
+                <div class="flex items-center gap-3">
                     <img width="50" height="90" src="/hoja-icono.png"
                         alt="Ilustración de hoja con transición horizontal de verde a verde azul">
                     <div>
