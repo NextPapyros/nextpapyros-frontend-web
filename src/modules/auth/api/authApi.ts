@@ -1,5 +1,6 @@
 import { api } from "@/services/apiClient";
-import type { Profile, Role } from "@/store/userStore";
+import type { Profile } from "@/store/userStore";
+import type { Role } from "@/types";
 
 import type {
   LoginRequest,
