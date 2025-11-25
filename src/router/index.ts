@@ -11,6 +11,7 @@ export const RouteNames = {
   ADMIN: "admin",
   EMPLOYEE: "employee",
   UNAUTHORIZED: "unauthorized",
+  PASSWORD_RECOVERY: "password-recovery",
   CREATE_EMPLOYEE: "create-employee",
   CREATE_PRODUCT: "create-product",
   CREATE_SUPPLIER: "create-supplier",
@@ -27,6 +28,15 @@ const routes: RouteRecordRaw[] = [
 
       if (user.isAdmin) return { name: RouteNames.ADMIN };
       return { name: RouteNames.EMPLOYEE };
+    },
+  },
+  {
+    path: "/password-recovery",
+    name: RouteNames.PASSWORD_RECOVERY,
+    component: () => import("@/modules/auth/views/PasswordRecovery.vue"),
+    beforeEnter() {
+      const user = useUserStore();
+      if (user.isAuthenticated) return { path: "/" };
     },
   },
   {

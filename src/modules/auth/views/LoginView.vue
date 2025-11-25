@@ -99,6 +99,10 @@ const getErrorMessage = () => {
                             <AlertDescription>{{ getErrorMessage() }}</AlertDescription>
                         </Alert>
 
+                        <RouterLink :to="RouteNames.PASSWORD_RECOVERY" class="text-regular-medium text-brand-base">
+                            ¿Olvidaste tu contraseña?
+                        </RouterLink>
+
                         <Button type="submit" class="w-full mt-2 bg-brand-base cursor-pointer hover:bg-brand-intense"
                             :disabled="isDisabled">
                             {{ isPending ? "Iniciando sesión..." : "Iniciar Sesión" }}
