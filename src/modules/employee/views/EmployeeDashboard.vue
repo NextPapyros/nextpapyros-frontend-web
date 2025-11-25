@@ -1,12 +1,8 @@
 <script setup lang="ts">
+import { RouteNames } from "@/router";
 import { useUserStore } from "@/store/userStore";
-import { Button } from "@/components/ui/button";
 
 const userStore = useUserStore();
-
-const logout = () => {
-    userStore.logout();
-};
 </script>
 
 <template>
@@ -21,10 +17,11 @@ const logout = () => {
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-blue-50 p-4 rounded-lg">
+                    <router-link :to="{ name: RouteNames.REGISTER_SALE }"
+                        class="bg-blue-50 p-4 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
                         <h3 class="font-semibold text-blue-900">Ventas</h3>
-                        <p class="text-blue-700 text-sm">Próximamente...</p>
-                    </div>
+                        <p class="text-blue-700 text-sm">Registrar nueva venta</p>
+                    </router-link>
                     <div class="bg-green-50 p-4 rounded-lg">
                         <h3 class="font-semibold text-green-900">Inventario</h3>
                         <p class="text-green-700 text-sm">Próximamente...</p>
@@ -34,10 +31,6 @@ const logout = () => {
                         <p class="text-purple-700 text-sm">Próximamente...</p>
                     </div>
                 </div>
-
-                <Button @click="logout" variant="outline">
-                    Cerrar Sesión
-                </Button>
             </div>
         </div>
     </div>

@@ -15,6 +15,7 @@ export const RouteNames = {
   CREATE_EMPLOYEE: "create-employee",
   CREATE_PRODUCT: "create-product",
   CREATE_SUPPLIER: "create-supplier",
+  REGISTER_SALE: "register-sale",
   RESET_PASSWORD: "reset-password",
 } as const;
 
@@ -113,6 +114,12 @@ const routes: RouteRecordRaw[] = [
         name: RouteNames.EMPLOYEE,
         component: () =>
           import("@/modules/employee/views/EmployeeDashboard.vue"),
+        meta: { roles: ["Employee"] },
+      },
+      {
+        path: "employee/sales",
+        name: RouteNames.REGISTER_SALE,
+        component: () => import("@/modules/sale/views/RegisterSale.vue"),
         meta: { roles: ["Employee"] },
       },
     ],
