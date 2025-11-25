@@ -1,6 +1,8 @@
 import { api } from "@/services/apiClient";
 
-import type { NewProduct } from "../types/productTypes";
+import type { Product } from "@/modules/sale/types/saleTypes";
+
+import type { NewProduct, ProductsFilters } from "../types/productTypes";
 
 export interface CreateProductPayloadDto {
   codigo: string;
@@ -10,6 +12,11 @@ export interface CreateProductPayloadDto {
   precio: number;
   stockMinimo: number;
 }
+
+type ProductsFiltersDto = {
+  q?: string;
+  lowStock?: true;
+};
 
 export async function createProductApi(payload: NewProduct): Promise<void> {
   const payloadDto: CreateProductPayloadDto = {
@@ -21,5 +28,15 @@ export async function createProductApi(payload: NewProduct): Promise<void> {
     stockMinimo: payload.minStock,
   };
   const { data } = await api.post("/products", payloadDto);
+  return data;
+}
+
+export async function getProducts(
+  filters?: ProductsFilters
+): Promise<Product[]> {
+  const params: ProductsFiltersDto = {};
+  if (filters?.search) params.q = filters.search;
+  if (filters?.onlyLow) params.lowStock = true;
+  const { data } = await api.get("/products", { params });
   return data;
 }

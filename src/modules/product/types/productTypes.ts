@@ -7,3 +7,8 @@ export interface NewProduct {
   price: number;
   minStock: number;
 }
+
+export type ProductsFilters = {
+  search?: string;
+  onlyLow?: boolean;
+};

@@ -19,6 +19,8 @@ export const RouteNames = {
   RESET_PASSWORD: "reset-password",
   EMPLOYEES_LIST: "employees-list",
   UPDATE_EMPLOYEE: "upate-employe",
+  PRODUCTS_LIST: "products-list",
+  UPDATE_PRODUCT: "update-product",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -115,6 +117,18 @@ const routes: RouteRecordRaw[] = [
         path: "admin/products/create",
         name: RouteNames.CREATE_PRODUCT,
         component: () => import("@/modules/product/views/CreateProduct.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "admin/products",
+        name: RouteNames.PRODUCTS_LIST,
+        component: () => import("@/modules/product/views/ProductsList.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "admin/products/:id",
+        name: RouteNames.UPDATE_PRODUCT,
+        component: () => "Update product",
         meta: { roles: ["Admin"] },
       },
       {

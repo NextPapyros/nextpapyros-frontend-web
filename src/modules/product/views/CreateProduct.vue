@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
-import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { PackagePlus } from "lucide-vue-next";
 import { toast } from "vue-sonner";
 
@@ -17,6 +17,7 @@ import { createProductApi } from "../api/productApi";
 import type { NewProduct } from "../types/productTypes";
 
 const router = useRouter();
+const queryClient = useQueryClient();
 
 const formData: NewProduct = reactive({
     code: "",
@@ -46,6 +47,8 @@ const { mutate, isPending } = useMutation({
         formData.cost = 0;
         formData.price = 0;
         formData.minStock = 0;
+
+        queryClient.invalidateQueries({ queryKey: ["products", "all"] });
 
         toast("✅ Producto creado exitosamente");
         goBack();
@@ -123,7 +126,7 @@ const handleSubmit = (e: Event) => {
 };
 
 const goBack = () => {
-    router.push({ name: RouteNames.ADMIN });
+    router.replace({ name: RouteNames.PRODUCTS_LIST });
 };
 </script>
 
