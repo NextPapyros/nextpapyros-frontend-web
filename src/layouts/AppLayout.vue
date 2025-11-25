@@ -37,8 +37,10 @@ const title = computed(() => {
         <header class="w-full p-4 flex justify-center bg-[#A3EBB133]">
             <div class="grow max-w-5xl flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <img width="50" height="90" src="/hoja-icono.png"
-                        alt="Ilustración de hoja con transición horizontal de verde a verde azul">
+                    <RouterLink :to="{ path: '/' }">
+                        <img width="50" height="90" src="/hoja-icono.png"
+                            alt="Ilustración de hoja con transición horizontal de verde a verde azul">
+                    </RouterLink>
                     <div>
                         <h1 class="title-2">
                             {{ title }}
