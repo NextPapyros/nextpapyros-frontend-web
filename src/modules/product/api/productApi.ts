@@ -2,7 +2,11 @@ import { api } from "@/services/apiClient";
 
 import type { Product } from "@/modules/sale/types/saleTypes";
 
-import type { NewProduct, ProductsFilters } from "../types/productTypes";
+import type {
+  NewProduct,
+  ProductsFilters,
+  ProductUpdate,
+} from "../types/productTypes";
 
 export interface CreateProductPayloadDto {
   codigo: string;
@@ -17,6 +21,14 @@ type ProductsFiltersDto = {
   q?: string;
   lowStock?: true;
   includeInactive?: true;
+};
+
+type ProductUpdateDto = {
+  nombre: string;
+  categoria: string;
+  costo: number;
+  precio: number;
+  stockMinimo: number;
 };
 
 export async function createProductApi(payload: NewProduct): Promise<void> {
@@ -44,10 +56,30 @@ export async function getProducts(
   return data;
 }
 
+export async function getProductByCode(code: string): Promise<Product> {
+  const { data } = await api.get(`/products/${code}`);
+  return data;
+}
+
 export async function deactivateProduct(code: string): Promise<void> {
   await api.delete(`/products/${code}`);
 }
 
 export async function reactivateProduct(code: string): Promise<void> {
   await api.post(`/products/${code}/reactivate`);
+}
+
+export async function updateProduct(
+  code: string,
+  payload: ProductUpdate
+): Promise<void> {
+  const dto: ProductUpdateDto = {
+    nombre: payload.name,
+    categoria: payload.category,
+    costo: payload.cost,
+    precio: payload.price,
+    stockMinimo: payload.minStock,
+  };
+
+  await api.put(`/products/${code}`, dto);
 }

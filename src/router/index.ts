@@ -128,7 +128,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: "admin/products/:id",
         name: RouteNames.UPDATE_PRODUCT,
-        component: () => "Update product",
+        component: () => import("@/modules/product/views/UpdateProduct.vue"),
         meta: { roles: ["Admin"] },
       },
       {

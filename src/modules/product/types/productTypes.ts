@@ -13,3 +13,11 @@ export type ProductsFilters = {
   onlyLow?: boolean;
   includeInactive?: boolean;
 };
+
+export type ProductUpdate = {
+  name: string;
+  category: string;
+  cost: number;
+  price: number;
+  minStock: number;
+};
