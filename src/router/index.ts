@@ -108,7 +108,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: "/employees/:id",
         name: RouteNames.UPDATE_EMPLOYEE,
-        component: () => "hola",
+        component: () => import("@/modules/admin/views/EditEmployee.vue"),
         meta: { roles: ["Admin"] },
       },
       {
