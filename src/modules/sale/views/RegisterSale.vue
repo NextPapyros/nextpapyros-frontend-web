@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery } from "@tanstack/vue-query";
 import { useDebounce } from "@vueuse/core";
 import { toast } from "vue-sonner";
 
@@ -15,15 +15,25 @@ import {
     Trash2,
     Package,
     DollarSign,
+    CreditCard,
 } from "lucide-vue-next";
 
-import { getProductsApi } from "../api/saleApi";
-import type { Product, CartItem } from "../types/saleTypes";
+import { getProductsApi, registerSale } from "../api/saleApi";
+import { type Product, type CartItem, PaymentMethod } from "../types/saleTypes";
+import { useRouter } from "vue-router";
+import { RouteNames } from "@/router";
+
+type SaleParams = {
+    payment: PaymentMethod;
+    items: CartItem[];
+}
+
+const router = useRouter();
 
 // Estado reactivo
 const searchTerm = ref("");
 const cart = ref<CartItem[]>([]);
-const isProcessing = ref(false);
+const paymentMethod = ref<PaymentMethod>(PaymentMethod.CASH);
 
 // Debounce para búsqueda
 const debouncedSearch = useDebounce(searchTerm, 300);
@@ -35,6 +45,16 @@ const { data: products, isLoading, error } = useQuery({
     enabled: computed(() => debouncedSearch.value.length > 0 || debouncedSearch.value === ""),
 });
 
+const { mutate: register, isPending: isRegistering } = useMutation({
+    mutationFn: (data: SaleParams) => registerSale(data.payment, data.items),
+    onSuccess(saleId) {
+        router.push({ name: RouteNames.RECEIPT_DETAIL, params: { saleId } })
+    },
+    onError() {
+        toast("❌ Error al registrar la venta")
+    }
+});
+
 // Filtrar productos activos
 const activeProducts = computed(() =>
     products.value?.filter(product => product.activo) || []
@@ -42,6 +62,8 @@ const activeProducts = computed(() =>
 
 // Agregar producto al carrito
 const addToCart = (product: Product) => {
+    if (isRegistering.value) return;
+
     const existingItem = cart.value.find(item => item.codigo === product.codigo);
 
     if (existingItem) {
@@ -105,25 +127,7 @@ const finalizeSale = async () => {
         return;
     }
 
-    isProcessing.value = true;
-
-    // Simular API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    console.log("[v0] Venta finalizada:", {
-        productos: cart.value,
-        total: subtotal.value,
-        fecha: new Date().toISOString(),
-    });
-
-    toast(
-        `🛒 Venta finalizada exitosamente.\nTotal: $${subtotal.value.toLocaleString("es-CO")}`
-    );
-
-    // Limpiar carrito
-    cart.value = [];
-    searchTerm.value = "";
-    isProcessing.value = false;
+    register({ payment: paymentMethod.value, items: cart.value })
 };
 </script>
 
@@ -250,6 +254,24 @@ const finalizeSale = async () => {
                             </div>
                         </div>
 
+                        <div class="mb-4 space-y-2">
+                            <label class="text-sm font-medium text-dark-base block">Método de Pago</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <Button :variant="paymentMethod === PaymentMethod.CASH ? 'default' : 'outline'"
+                                    :class="paymentMethod === PaymentMethod.CASH ? 'bg-brand-base hover:bg-brand-intense text-white' : 'border-dark-soft text-dark-base hover:bg-light-base'"
+                                    @click="paymentMethod = PaymentMethod.CASH">
+                                    <DollarSign className="h-4 w-4 mr-2" />
+                                    Efectivo
+                                </Button>
+                                <Button :variant="paymentMethod === PaymentMethod.CREDIT_CARD ? 'default' : 'outline'"
+                                    :class="paymentMethod === PaymentMethod.CREDIT_CARD ? 'bg-brand-base hover:bg-brand-intense text-white' : 'border-dark-soft text-dark-base hover:bg-light-base'"
+                                    @click="paymentMethod = PaymentMethod.CREDIT_CARD">
+                                    <CreditCard className="h-4 w-4 mr-2" />
+                                    Tarjeta
+                                </Button>
+                            </div>
+                        </div>
+
                         <!-- Divider -->
                         <div class="border-t border-gray-200 pt-4">
                             <!-- Subtotal -->
@@ -273,10 +295,10 @@ const finalizeSale = async () => {
                             </div>
 
                             <!-- Finalizar Venta Button -->
-                            <Button @click="finalizeSale" :disabled="isProcessing"
+                            <Button @click="finalizeSale" :disabled="isRegistering"
                                 class="w-full bg-brand-base hover:bg-brand-intense text-white h-12 text-base font-semibold">
                                 <DollarSign class="h-5 w-5 mr-2" />
-                                {{ isProcessing ? "Procesando..." : "Finalizar Venta" }}
+                                {{ isRegistering ? "Procesando..." : "Finalizar Venta" }}
                             </Button>
                         </div>
                     </div>

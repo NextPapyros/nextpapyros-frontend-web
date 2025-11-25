@@ -22,3 +22,9 @@ export interface SaleData {
   total: number;
   fecha: string;
 }
+
+export const PaymentMethod = {
+  CASH: "cash",
+  CREDIT_CARD: "credit-card",
+};
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];

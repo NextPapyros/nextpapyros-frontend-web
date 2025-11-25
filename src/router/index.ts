@@ -21,6 +21,7 @@ export const RouteNames = {
   UPDATE_EMPLOYEE: "upate-employe",
   PRODUCTS_LIST: "products-list",
   UPDATE_PRODUCT: "update-product",
+  RECEIPT_DETAIL: "receipt-detail",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -151,6 +152,12 @@ const routes: RouteRecordRaw[] = [
         meta: { roles: ["Employee"] },
       },
     ],
+  },
+  {
+    path: "/receipt/:saleId",
+    name: RouteNames.RECEIPT_DETAIL,
+    component: () => import("@/modules/sale/views/SaleReceipt.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/unauthorized",
