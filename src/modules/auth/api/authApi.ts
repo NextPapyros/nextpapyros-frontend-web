@@ -31,6 +31,18 @@ export async function sendRecoveryInstructions(email: string): Promise<void> {
   await api.post("/auth/forgot-password", { email });
 }
 
+export interface ResetPasswordRequest {
+  email: string;
+  token: string;
+  newPassword: string;
+}
+
+export async function resetPasswordApi(
+  payload: ResetPasswordRequest
+): Promise<void> {
+  await api.post("/auth/reset-password", payload);
+}
+
 export async function getProfileApi(): Promise<Profile> {
   const { data } = await api.get<ProfileResponse>("/auth/me");
   return {
