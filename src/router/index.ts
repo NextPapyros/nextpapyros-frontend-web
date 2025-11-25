@@ -15,6 +15,7 @@ export const RouteNames = {
   CREATE_EMPLOYEE: "create-employee",
   CREATE_PRODUCT: "create-product",
   CREATE_SUPPLIER: "create-supplier",
+  RESET_PASSWORD: "reset-password",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -37,6 +38,35 @@ const routes: RouteRecordRaw[] = [
     beforeEnter() {
       const user = useUserStore();
       if (user.isAuthenticated) return { path: "/" };
+    },
+  },
+  {
+    path: "/reset-password",
+    name: RouteNames.RESET_PASSWORD,
+    component: () => import("@/modules/auth/views/ResetPassword.vue"),
+    beforeEnter(to) {
+      const user = useUserStore();
+      if (user.isAuthenticated) return { path: "/" };
+
+      let email = to.query.email;
+      let token = to.query.token;
+      if (!email || !token) return { path: "/" };
+
+      email = Array.isArray(email) ? email[0] : email;
+      token = Array.isArray(token) ? token[0] : token;
+
+      // Validate Token (100000 - 999999)
+      const tokenRegex = /^[1-9]\d{5}$/;
+      // Basic Email Validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (
+        !token ||
+        !email ||
+        !tokenRegex.test(token) ||
+        !emailRegex.test(email)
+      )
+        return { path: "/" };
     },
   },
   {
