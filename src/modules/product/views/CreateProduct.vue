@@ -247,7 +247,7 @@ const goBack = () => {
                     <!-- Stock Inicial -->
                     <div class="space-y-2">
                         <Label for="stockMinimo" class="text-gray-900">
-                            Stock Inicial <span class="text-red-500">*</span>
+                            Stock Minimo <span class="text-red-500">*</span>
                         </Label>
                         <Input id="stockMinimo" v-model.number="formData.minStock" type="number" min="0" step="1"
                             placeholder="0" :class="{ 'border-red-500': errors.stockMinimo }"
