@@ -27,6 +27,10 @@ export async function loginApi(payload: LoginRequest): Promise<LoginResponse> {
   return data;
 }
 
+export async function sendRecoveryInstructions(email: string): Promise<void> {
+  await api.post("/auth/forgot-password", { email });
+}
+
 export async function getProfileApi(): Promise<Profile> {
   const { data } = await api.get<ProfileResponse>("/auth/me");
   return {
