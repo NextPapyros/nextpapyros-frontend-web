@@ -161,3 +161,7 @@
 @utility text-medium {
   @apply font-medium text-base;
 }
+
+@utility text-mini-medium {
+  @apply font-medium text-[12px];
+}
