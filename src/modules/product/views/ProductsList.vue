@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/vue-query';
 import { getProducts } from '../api/productApi';
 import { computed, ref } from 'vue';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LucideEdit2, LucidePlus, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
+import { LucidePlus, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -89,7 +89,6 @@ const { data: products, isLoading, isError } = useQuery({
                                 <TableHead>Precio</TableHead>
                                 <TableHead>Stock</TableHead>
                                 <TableHead>Estado</TableHead>
-                                <TableHead className="text-right">Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -115,14 +114,6 @@ const { data: products, isLoading, isError } = useQuery({
                                     }">
                                         {{ producto.activo ? "Activo" : "Inactivo" }}
                                     </Badge>
-                                </TableCell>
-                                <TableCell class="text-right">
-                                    <RouterLink
-                                        :to="{ name: RouteNames.UPDATE_PRODUCT, params: { id: producto.codigo } }">
-                                        <Button variant="ghost" size="icon" title="Editar" class="hover:bg-brand-soft">
-                                            <LucideEdit2 class="h-4 w-4 text-brand-intense" />
-                                        </Button>
-                                    </RouterLink>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
