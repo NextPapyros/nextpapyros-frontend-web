@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/vue-query';
 import { getProducts } from '../api/productApi';
 import { computed, ref } from 'vue';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LucidePlus, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
+import { LucidePackage, LucidePlus, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -76,7 +76,7 @@ const { data: products, isLoading, isError } = useQuery({
                     <p class="text-medium text-dark-soft">Hubo un error al cargar los productos</p>
                 </div>
                 <div v-else-if="products?.length === 0" class="text-center py-8">
-                    <Package class="h-12 w-12 text-dark-soft/30 mx-auto mb-3" />
+                    <LucidePackage class="h-12 w-12 text-dark-soft/30 mx-auto mb-3" />
                     <p class="text-dark-soft">No se encontraron productos</p>
                 </div>
                 <div v-else className="overflow-x-auto">
