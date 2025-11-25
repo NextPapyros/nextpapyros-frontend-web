@@ -16,6 +16,7 @@ export interface CreateProductPayloadDto {
 type ProductsFiltersDto = {
   q?: string;
   lowStock?: true;
+  includeInactive?: true;
 };
 
 export async function createProductApi(payload: NewProduct): Promise<void> {
@@ -37,6 +38,16 @@ export async function getProducts(
   const params: ProductsFiltersDto = {};
   if (filters?.search) params.q = filters.search;
   if (filters?.onlyLow) params.lowStock = true;
+  if (filters?.includeInactive) params.includeInactive = true;
+
   const { data } = await api.get("/products", { params });
   return data;
+}
+
+export async function deactivateProduct(code: string): Promise<void> {
+  await api.delete(`/products/${code}`);
+}
+
+export async function reactivateProduct(code: string): Promise<void> {
+  await api.post(`/products/${code}/reactivate`);
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import { getProducts } from '../api/productApi';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { deactivateProduct, getProducts, reactivateProduct } from '../api/productApi';
 import { computed, ref } from 'vue';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LucidePackage, LucidePlus, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
+import { LucideEdit2, LucidePackage, LucidePlus, LucidePower, LucideSearch, LucideTriangleAlert } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -13,21 +13,85 @@ import { Badge } from '@/components/ui/badge';
 import { RouteNames } from '@/router';
 import { Button } from '@/components/ui/button';
 import { useDebounce } from '@vueuse/core';
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import type { Product } from '@/modules/sale/types/saleTypes';
+import AlertDialogAction from '@/components/ui/alert-dialog/AlertDialogAction.vue';
+import { toast } from 'vue-sonner';
+
+const DEBOUNCE_DELAY = 500;
+const productsListBaseKey = ["products", "all"] as const;
+
+const queryClient = useQueryClient();
 
 const search = ref("");
-const debouncedSearch = useDebounce(search, 500);
+const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
 const onlyLow = ref(false);
-const debouncedOnlyLow = useDebounce(onlyLow, 500);
+const debouncedOnlyLow = useDebounce(onlyLow, DEBOUNCE_DELAY);
+const includeInactive = ref(false);
+const debouncedIncludeInactive = useDebounce(includeInactive, DEBOUNCE_DELAY);
+
+const isDialogOpen = ref(false);
+const selectedProduct = ref<Product | null>(null);
 
 const debouncedFilters = computed(() => ({
     search: debouncedSearch.value,
-    onlyLow: debouncedOnlyLow.value
+    onlyLow: debouncedOnlyLow.value,
+    includeInactive: debouncedIncludeInactive.value
 }));
 
 const { data: products, isLoading, isError } = useQuery({
-    queryKey: ["products", "all", debouncedFilters],
+    queryKey: [...productsListBaseKey, debouncedFilters],
     queryFn: () => getProducts(debouncedFilters.value)
 });
+
+const { mutate: deactivate, isPending: isDeactivating } = useMutation({
+    mutationFn: deactivateProduct,
+    onSuccess() {
+        queryClient.invalidateQueries({ queryKey: productsListBaseKey });
+        toast.success("Producto desactivado correctamente");
+    },
+    onError() {
+        toast.error("Hubo un error al desactivar el producto");
+    },
+    onSettled() {
+        isDialogOpen.value = false;
+        selectedProduct.value = null;
+    }
+});
+
+const { mutate: reactivate, isPending: isReactivating } = useMutation({
+    mutationFn: reactivateProduct,
+    onSuccess() {
+        queryClient.invalidateQueries({ queryKey: productsListBaseKey });
+        toast.success("Producto reactivado correctamente");
+    },
+    onError() {
+        toast.error("Hubo un error al reactivar el producto");
+    },
+    onSettled() {
+        isDialogOpen.value = false;
+        selectedProduct.value = null;
+    }
+});
+
+const handleToggleState = (producto: Product) => {
+    selectedProduct.value = producto;
+    isDialogOpen.value = true;
+}
+
+const handleCancelDialog = () => {
+    selectedProduct.value = null;
+    isDialogOpen.value = false;
+}
+
+const handleConfirmDialog = () => {
+    if (!selectedProduct.value || isDeactivating.value || isReactivating.value) return;
+
+    if (selectedProduct.value.activo)
+        deactivate(selectedProduct.value.codigo);
+    else
+        reactivate(selectedProduct.value.codigo);
+}
 </script>
 
 <template>
@@ -52,11 +116,19 @@ const { data: products, isLoading, isError } = useQuery({
                         <Input placeholder="Buscar por código o nombre..." v-model="search" class="pl-10" />
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <Checkbox id="stock-bajo" v-model="onlyLow" />
-                    <Label for="stock-bajo" class="text-sm font-medium cursor-pointer">
-                        Mostrar solo productos con stock bajo
-                    </Label>
+                <div class="flex gap-2">
+                    <div class="flex items-center gap-2">
+                        <Checkbox id="stock-bajo" v-model="onlyLow" />
+                        <Label for="stock-bajo" class="text-sm font-medium cursor-pointer">
+                            Mostrar solo productos con stock bajo
+                        </Label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <Checkbox id="inactivos" v-model="includeInactive" />
+                        <Label for="inactivos" class="text-sm font-medium cursor-pointer">
+                            Mostrar productos inactivos
+                        </Label>
+                    </div>
                 </div>
             </CardContent>
         </Card>
@@ -89,6 +161,7 @@ const { data: products, isLoading, isError } = useQuery({
                                 <TableHead>Precio</TableHead>
                                 <TableHead>Stock</TableHead>
                                 <TableHead>Estado</TableHead>
+                                <TableHead class="text-right">Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -115,6 +188,24 @@ const { data: products, isLoading, isError } = useQuery({
                                         {{ producto.activo ? "Activo" : "Inactivo" }}
                                     </Badge>
                                 </TableCell>
+                                <TableCell class="text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <RouterLink
+                                            :to="{ name: RouteNames.UPDATE_PRODUCT, params: { id: producto.codigo } }">
+                                            <Button variant="ghost" size="icon" title="Editar"
+                                                class="hover:bg-brand-soft">
+                                                <LucideEdit2 class="h-4 w-4 text-dark-intense" />
+                                            </Button>
+                                        </RouterLink>
+                                        <Button variant="ghost" size="icon"
+                                            :title="producto.activo ? 'Desactivar' : 'Activar'"
+                                            :class="producto.activo ? 'hover:bg-red-200' : 'hover:bg-green-200'"
+                                            @click="handleToggleState(producto)">
+                                            <LucidePower class="h-4 w-4"
+                                                :class="producto.activo ? 'text-error-intense' : 'text-brand-intense'" />
+                                        </Button>
+                                    </div>
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -122,4 +213,29 @@ const { data: products, isLoading, isError } = useQuery({
             </CardContent>
         </Card>
     </div>
+
+    <AlertDialog v-model:open="isDialogOpen">
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>
+                    {{ selectedProduct?.activo ? "Desactivar Producto" : "Activar Producto" }}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                    <template v-if="selectedProduct?.activo">
+                        ¿Está seguro de que desea desactivar {{ selectedProduct?.nombre }}. El producto no estará
+                        disponible para la venta pero se mantendrá en el catálogo.
+                    </template>
+                    <template v-else>
+                        ¿Está seguro de que desea activar {{ selectedProduct?.nombre }}? El producto volverá a estar
+                        disponible para la venta.
+                    </template>
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogCancel @click="handleCancelDialog">Cancelar</AlertDialogCancel>
+            <AlertDialogAction @click="handleConfirmDialog"
+                :class="selectedProduct?.activo ? 'bg-error-base hover:bg-error-intense' : 'bg-brand-base hover:bg-brand-intense'">
+                {{ selectedProduct?.activo ? 'Desactivar' : 'Activar' }}
+            </AlertDialogAction>
+        </AlertDialogContent>
+    </AlertDialog>
 </template>

@@ -11,4 +11,5 @@ export interface NewProduct {
 export type ProductsFilters = {
   search?: string;
   onlyLow?: boolean;
+  includeInactive?: boolean;
 };
