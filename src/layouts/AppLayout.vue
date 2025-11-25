@@ -24,6 +24,7 @@ const title = computed(() => {
         case RouteNames.EMPLOYEE:
             return "Panel Empleado"
         case RouteNames.CREATE_EMPLOYEE:
+        case RouteNames.EMPLOYEES_LIST:
             return "Gestión de Empleados"
         default:
             return "Papeleria"
@@ -34,7 +35,7 @@ const title = computed(() => {
 <template>
     <main class="h-screen flex flex-col overflow-hidden">
         <header class="w-full p-4 flex justify-center bg-[#A3EBB133]">
-            <div class="grow max-w-7xl flex justify-between items-center">
+            <div class="grow max-w-5xl flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <img width="50" height="90" src="/hoja-icono.png"
                         alt="Ilustración de hoja con transición horizontal de verde a verde azul">
@@ -66,7 +67,7 @@ const title = computed(() => {
             </div>
         </header>
         <section class="p-6 flex-1 flex justify-center items-start bg-light-base overflow-auto">
-            <div class="w-full max-w-7xl">
+            <div class="w-full max-w-5xl">
                 <RouterView />
             </div>
         </section>

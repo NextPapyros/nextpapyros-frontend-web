@@ -17,6 +17,8 @@ export const RouteNames = {
   CREATE_SUPPLIER: "create-supplier",
   REGISTER_SALE: "register-sale",
   RESET_PASSWORD: "reset-password",
+  EMPLOYEES_LIST: "employees-list",
+  UPDATE_EMPLOYEE: "upate-employe",
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -95,6 +97,18 @@ const routes: RouteRecordRaw[] = [
         path: "admin/employees/create",
         name: RouteNames.CREATE_EMPLOYEE,
         component: () => import("@/modules/admin/views/CreateEmployee.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "/employees",
+        name: RouteNames.EMPLOYEES_LIST,
+        component: () => import("@/modules/employee/views/EmployeesList.vue"),
+        meta: { roles: ["Admin"] },
+      },
+      {
+        path: "/employees/:id",
+        name: RouteNames.UPDATE_EMPLOYEE,
+        component: () => "hola",
         meta: { roles: ["Admin"] },
       },
       {

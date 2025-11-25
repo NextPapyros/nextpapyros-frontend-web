@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { UserPlus } from "lucide-vue-next";
 import { toast } from "vue-sonner"
 
@@ -17,6 +17,7 @@ import { createEmployeeApi } from "../api/employeeApi";
 import type { NewEmployee } from "../types/adminTypes";
 
 const router = useRouter();
+const queryClient = useQueryClient();
 
 const formData: NewEmployee = reactive({
     document: "",
@@ -35,6 +36,8 @@ const { mutate, isPending } = useMutation({
         formData.name = "";
         formData.email = "";
         formData.rol = Role.Employee;
+
+        queryClient.invalidateQueries({ queryKey: ["employess", "all"] });
 
         toast("✅ Empleado creado exitosamente");
         goBack();
@@ -112,7 +115,7 @@ const handleSubmit = (e: Event) => {
 };
 
 const goBack = () => {
-    router.push({ name: RouteNames.ADMIN });
+    router.replace({ name: RouteNames.EMPLOYEES_LIST });
 };
 </script>
 

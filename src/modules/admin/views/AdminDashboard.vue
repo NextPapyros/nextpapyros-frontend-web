@@ -17,7 +17,7 @@ const userStore = useUserStore();
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    <router-link :to="{ name: RouteNames.CREATE_EMPLOYEE }"
+                    <router-link :to="{ name: RouteNames.EMPLOYEES_LIST }"
                         class="bg-blue-50 p-4 rounded-lg hover:bg-blue-100 transition-colors">
                         <h3 class="font-semibold text-blue-900">Gestión de Empleados</h3>
                         <p class="text-blue-700 text-sm">Crear nuevos empleados y gestionar roles</p>
